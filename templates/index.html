@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Salary Category Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="masthead">
+      <h1 class="masthead-title">Salary Ledger</h1>
+      <span class="masthead-tag">Random Forest · v1.0</span>
+    </div>
+    <p class="subhead">Predicts whether an employee record falls into the <span>High</span> or <span>Low</span> salary category, based on age, education, experience, income and loan amount.</p>
+
+    <div class="ledger">
+      <div class="ledger-head">
+        <h2>Employee Record</h2>
+        <span class="field-count">5 fields</span>
+      </div>
+
+      {% if error %}
+      <div class="error-box">Could not generate a prediction — {{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="/predict">
+        <div class="grid">
+          <div class="field">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" min="18" max="80" step="1"
+                   value="{{ form_data.age if form_data else 32 }}" required>
+          </div>
+
+          <div class="field">
+            <label for="education_level">Education level</label>
+            <select id="education_level" name="education_level" required>
+              {% for opt in education_options %}
+              <option value="{{ opt }}" {% if form_data and form_data.education_level == opt %}selected{% endif %}>{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="experience">Experience (years)</label>
+            <input type="number" id="experience" name="experience" min="0" max="50" step="1"
+                   value="{{ form_data.experience if form_data else 8 }}" required>
+          </div>
+
+          <div class="field">
+            <label for="income">Annual income (₹)</label>
+            <input type="number" id="income" name="income" min="0" step="1000"
+                   value="{{ form_data.income if form_data else 64000 }}" required>
+            <span class="hint">Current gross annual income</span>
+          </div>
+
+          <div class="field">
+            <label for="loan_amount">Outstanding loan amount (₹)</label>
+            <input type="number" id="loan_amount" name="loan_amount" min="0" step="500"
+                   value="{{ form_data.loan_amount if form_data else 15000 }}" required>
+            <span class="hint">0 if none</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="submit">Run prediction</button>
+          <span class="note">Model: RandomForestClassifier · trained on 1,000 synthetic records</span>
+        </div>
+      </form>
+    </div>
+
+    {% if prediction %}
+    <div class="result">
+      <div class="result-row">
+        <div>
+          <div class="result-label">Predicted salary category</div>
+          <p class="result-value {{ 'high' if prediction == 'High' else 'low' }}">{{ prediction }}</p>
+        </div>
+        <div class="stamp {{ 'high' if prediction == 'High' else 'low' }}">
+          {{ 'Approved · High Bracket' if prediction == 'High' else 'Flagged · Low Bracket' }}
+        </div>
+      </div>
+
+      <div class="confidence-track">
+        <div class="confidence-fill {{ 'low' if prediction != 'High' else '' }}" style="width: {{ confidence }}%;"></div>
+      </div>
+      <div class="confidence-caption">Model confidence: {{ confidence }}%</div>
+
+      <div class="result-meta">
+        <div class="meta-item"><span class="k">Age</span><span class="v">{{ form_data.age }}</span></div>
+        <div class="meta-item"><span class="k">Education</span><span class="v">{{ form_data.education_level }}</span></div>
+        <div class="meta-item"><span class="k">Experience</span><span class="v">{{ form_data.experience }} yrs</span></div>
+        <div class="meta-item"><span class="k">Income</span><span class="v">₹{{ form_data.income }}</span></div>
+        <div class="meta-item"><span class="k">Loan</span><span class="v">₹{{ form_data.loan_amount }}</span></div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+      Trained with scikit-learn · Served with Flask · <a href="https://github.com/shirleyvinston" target="_blank" rel="noopener">github.com/shirleyvinston</a>
+    </div>
+
+  </div>
+</body>
+</html>
