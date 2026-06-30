@@ -221,17 +221,3 @@ persistence with Joblib, and deployment behind a Flask web interface. The
 Random Forest model learns patterns relating employee attributes to salary
 category and serves predictions in real time through both a web form and a
 JSON API.
-
-## Short Project Logic (for Viva / Interview)
-
-We generated a structured employee dataset using Pandas and NumPy, with
-features (age, education level, experience, income, loan amount) and a
-target salary category derived from income. The dataset was split into
-training and testing sets (80/20, stratified). A Random Forest Classifier
-was trained on the training data to learn the relationship between employee
-attributes and salary category, achieving ~95% test accuracy. The trained
-model and its label encoder were saved using Joblib, then loaded inside a
-Flask application that exposes both an HTML form and a JSON API for making
-predictions on new employee records in real time.
-
-
