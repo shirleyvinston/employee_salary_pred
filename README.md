@@ -234,6 +234,4 @@ model and its label encoder were saved using Joblib, then loaded inside a
 Flask application that exposes both an HTML form and a JSON API for making
 predictions on new employee records in real time.
 
----
 
-**Author:** Pooja S — [github.com/pooja-s6](https://github.com/pooja-s6)
